@@ -89,7 +89,7 @@
 
   .chunk-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:22px 0 0}
   .chunk{background:rgba(255,255,255,.82);border:1px solid rgba(216,226,236,.9);border-radius:18px;padding:20px 20px 19px;box-shadow:0 14px 34px rgba(6,42,82,.055)}
-  .chunk:first-child{grid-column:1 / -1;background:linear-gradient(135deg,#FFFFFF 0%,#F1E6DA 100%)}
+  .chunk.featured{grid-column:1 / -1;background:linear-gradient(135deg,#FFFFFF 0%,#F1E6DA 100%)}
   .chunk-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}
   .chunk h3{font-size:20px;line-height:1.18;margin:0;font-weight:800;color:var(--ink)}
   .tag{flex:none;font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:0;color:var(--copper-ink);background:var(--copper-bg);border-radius:9px;padding:6px 9px;white-space:nowrap}
@@ -114,6 +114,14 @@
   .path li{position:relative;padding:7px 0 7px 22px;font-size:15.75px;color:var(--ink)}
   .path li::before{content:"";position:absolute;left:0;top:17px;width:10px;height:2px;background:var(--copper);border-radius:2px}
 
+  .pivot{border-top:1px solid var(--line);padding:48px 0}
+  .pivot-card{background:var(--navy);color:#fff;border-radius:22px;padding:30px 32px;box-shadow:0 24px 60px rgba(6,42,82,.22)}
+  .pivot-card .sec-label{color:var(--copper-lt)}
+  .pivot-card h2{font-family:var(--sans);font-weight:800;font-size:clamp(28px,3.4vw,38px);line-height:1.08;letter-spacing:0;color:#fff;margin:0 0 11px;max-width:18ch;text-wrap:balance}
+  .pivot-card p{color:#D7E0EC;font-size:18px;margin:0;line-height:1.55;max-width:62ch}
+  .pivot-card p + p{margin-top:16px}
+  .pivot-card .pivot-question{font-size:21px;line-height:1.42;color:#fff}
+
   .choice{display:grid;gap:12px;margin:0 0 8px}
   .opt{display:flex;gap:15px;align-items:flex-start;border:1.5px solid rgba(216,226,236,.96);border-radius:16px;padding:17px 18px;background:rgba(255,255,255,.84);cursor:pointer;transition:border-color .18s,background .18s,transform .18s,box-shadow .18s}
   .opt:hover{border-color:#B9C9DA;transform:translateY(-1px);box-shadow:0 12px 30px rgba(6,42,82,.075)}
@@ -134,6 +142,10 @@
   .slice.ranked{border-color:var(--copper)}
   .slice .rankbadge{flex:none;display:grid;place-items:center;width:29px;height:29px;border-radius:9px;border:1.5px solid var(--line);color:var(--muted);font-family:var(--mono);font-weight:600;font-size:14px}
   .slice.ranked .rankbadge{background:var(--copper-ink);border-color:var(--copper-ink);color:#fff}
+  .slice.fixed{cursor:default;background:rgba(238,243,247,.66);opacity:.9}
+  .slice.fixed:hover{transform:none;border-color:rgba(216,226,236,.96)}
+  .slice.fixed .rankbadge{background:var(--muted);border-color:var(--muted);color:#fff}
+  .prereq-chip{display:inline-block;font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.02em;color:var(--copper-ink);background:var(--copper-bg);border-radius:7px;padding:3px 7px;margin-left:8px;vertical-align:middle;white-space:nowrap}
   .slice h4{margin:0 0 1px;font-size:16.5px;font-weight:700;color:var(--ink)}
   .slice p{margin:0;font-size:14.5px;color:var(--muted)}
   .answer{margin-top:18px;font-family:var(--mono);font-size:14px;line-height:1.55;color:var(--ink);background:var(--p1-bg);border:1px solid rgba(21,90,149,.12);border-radius:14px;padding:15px 17px;white-space:pre-wrap}
@@ -141,7 +153,6 @@
   .action{display:inline-flex;align-items:center;border:0;border-radius:12px;background:var(--navy);color:#fff;text-decoration:none;font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:0;padding:10px 14px;cursor:pointer;transition:background .18s,transform .18s,box-shadow .18s}
   .action:hover{background:var(--navy-2);transform:translateY(-1px);box-shadow:0 10px 24px rgba(6,42,82,.18)}
   .action:active{transform:translateY(1px)}
-  .action.secondary{background:var(--copper-ink)}
   .status{font-size:14px;color:var(--success);margin:9px 0 0;display:none}
 
   ul.assume{list-style:none;padding:0;margin:0}
@@ -195,12 +206,32 @@
     .tag{display:inline-block;margin-top:9px}
     .path-title{display:block}
     .rec-badge{display:inline-block;margin-top:8px}
-    .chunk:first-child{grid-column:auto}
+    .chunk.featured{grid-column:auto}
+    .pivot-card{border-radius:18px;padding:24px 22px}
     .next-card{border-radius:18px;padding:24px 22px}
   }
   @media(prefers-reduced-motion:reduce){
     html{scroll-behavior:auto}
     *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+  }
+
+  @media print{
+    html{scroll-behavior:auto}
+    body{background:#fff;color:var(--ink);font-size:11pt;line-height:1.5;padding:0}
+    .wrap{max-width:none}
+    .skip-link,.hero-panel,.hero-note,.actions,.status{display:none!important}
+    .hero{display:block;margin-bottom:22px}
+    .hero-copy{min-height:auto}
+    .topline{margin-bottom:18px}
+    main{background:#fff;border:0;border-radius:0;padding:0;box-shadow:none;backdrop-filter:none}
+    .pivot-card,.next-card{background:#fff;color:var(--ink);box-shadow:none;border:1px solid var(--line)}
+    .pivot-card h2,.next-card h2,.pivot-card .sec-label,.next-card .sec-label,.pivot-card .pivot-question{color:var(--ink)}
+    .pivot-card p,.next-card p{color:var(--muted)}
+    .sec,.pivot,.next{break-inside:avoid;page-break-inside:avoid;padding:20px 0}
+    .chunk,.path,.step,.opt,.slice,.hero-insight,.answer{box-shadow:none}
+    .chunk.featured,.path.recommended,.opt[aria-pressed="true"]{background:#fff}
+    .num,.bucket-list li::before{box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+    [data-reveal]{opacity:1!important;transform:none!important}
   }
 </style>
 </head>
@@ -221,9 +252,9 @@
         <p class="lede">What we heard, what it implies for the reporting architecture, and the delivery choice needed before scope, timeline, and budget.</p>
       </div>
       <div class="hero-insights" aria-label="Readout summary">
-        <div class="hero-insight"><b>Core problem</b><span>Trustworthy data, not prettier charts.</span></div>
+        <div class="hero-insight"><b>Core problem</b><span>Data the team can trust.</span></div>
         <div class="hero-insight"><b>Shared foundation</b><span>Collect, normalize, validate, report.</span></div>
-        <div class="hero-insight"><b>Decision needed</b><span>Whole release, phased priority, or date-led first slice.</span></div>
+        <div class="hero-insight"><b>Decision needed</b><span>Whole release, or phased by what you want in scope first.</span></div>
       </div>
     </div>
     <figure class="hero-panel">
@@ -242,21 +273,22 @@
     <div class="sec-body">
       <div class="callout strong">
         <h3>Reliability is the center of the project.</h3>
-        <p>Caprock's stated priority is a reliable marketing data system. Dashboards are the useful surface, but the work succeeds or fails on trusted data, consistent definitions, and a process for checking accuracy.</p>
+        <p>Caprock's stated priority is a reliable marketing data system. Dashboards are the useful surface. The work succeeds on trusted data, consistent definitions, and a repeatable process for checking accuracy.</p>
       </div>
       <ul class="clean">
-        <li><b>Reporting needs to span channels.</b> Paid, organic, web, email, calls, forms, MQLs, geo, and campaign views all need to line up.</li>
+        <li><b>Reporting needs to span channels.</b> Paid, organic, web, email, calls, forms, MQLs, geo, campaign, creative, and audience views all need to line up.</li>
         <li><b>The new dashboard should feel familiar.</b> The difference is the cleaner data foundation underneath it.</li>
-        <li><b>Caprock's manual tracker exists because trust is missing.</b> The replacement must make data easier to verify, not just easier to display.</li>
-        <li><b>Closed-loop ROI is a later maturity step.</b> Dynamics matters, but the immediate need is to preserve source and campaign data so ROI can be connected cleanly later.</li>
+        <li><b>Caprock's manual tracker exists because trust is missing.</b> The replacement should make data easy to verify and then display it cleanly.</li>
+        <li><b>Closed-loop ROI is a later maturity step.</b> Dynamics CRM matters, but the immediate need is to preserve source and campaign data so ROI can be connected cleanly later.</li>
       </ul>
       <div class="callout">
-        <h3>The requirements fall into four buckets.</h3>
+        <h3>Two buckets of need, on one trusted foundation.</h3>
+        <p>Caprock described two distinct needs: a tool the marketing team can use to analyze performance themselves, and reports for leadership and the board. Both sit on the same foundation of trustworthy, consistently defined data.</p>
         <ol class="bucket-list">
-          <li><span><b>Trustworthy data and refresh cadence.</b> The system needs reliable inputs, clear definitions, and a repeatable way to check accuracy.</span></li>
-          <li><span><b>Flexible analysis.</b> Caprock needs custom dates, period comparisons, campaign views, geo, audience, and channel filters.</span></li>
-          <li><span><b>Consistent performance reporting.</b> Paid, organic, website, calls, forms, email, SEO, and MQLs need to sit in one reporting frame.</span></li>
-          <li><span><b>Audience-specific outputs.</b> Marketing, leadership, board, and eventually regional teams need different views from the same reporting foundation.</span></li>
+          <li><span><b>Trustworthy data and consistent definitions.</b> Reliable inputs, shared KPIs across channels, and a repeatable way to check accuracy.</span></li>
+          <li><span><b>A marketing analysis tool.</b> The team can pull and analyze across channels, campaigns, creative, and audiences, with custom date ranges and period-over-period and year-over-year comparisons.</span></li>
+          <li><span><b>Leadership and board reporting.</b> Summary, channel, and campaign views for the team, plus higher-level summaries built for leadership and board conversations.</span></li>
+          <li><span><b>Views suited to each audience.</b> Marketing, leadership, board, and eventually regional teams work from the same foundation.</span></li>
         </ol>
       </div>
     </div>
@@ -268,14 +300,22 @@
       <h2>The proposed reporting foundation</h2>
     </div>
     <div class="sec-body">
-      <p>Every delivery path uses the same foundation: collect the data, normalize it, validate it, then report from that trusted layer. This keeps the new dashboard focused on clear decisions instead of forcing it to solve every source, definition, and exception by hand.</p>
+      <p>Every delivery path uses the same foundation: collect the data, normalize it, validate it, then report from that trusted layer. This keeps the new dashboard focused on clear decisions, with sources, definitions, and exceptions resolved in the trusted layer.</p>
       <div class="flow">
         <div class="step"><span class="num">1</span><div class="step-body"><h4>Collect</h4><p>Paid channels, organic channels, GA4, CallRail, forms, email, MQLs, and future CRM data.</p></div></div>
         <div class="step key"><span class="num">2</span><div class="step-body"><h4>Unify and validate</h4><p>Shared campaign, channel, geo, date, and KPI definitions with an explicit quality check.</p></div></div>
         <div class="step"><span class="num">3</span><div class="step-body"><h4>Report</h4><p>New reporting views for marketing, leadership, channel detail, campaign detail, and board-ready summaries.</p></div></div>
-        <div class="step"><span class="num">4</span><div class="step-body"><h4>Extend</h4><p>BigQuery, Squid, Dynamics, and closed-loop ROI can be added as the data model matures.</p></div></div>
+        <div class="step"><span class="num">4</span><div class="step-body"><h4>Extend</h4><p>BigQuery, Squid, Dynamics CRM, and closed-loop ROI can be added as the data model matures.</p></div></div>
       </div>
-      <p class="muted note">This is the foundation whether the project is delivered in one release or in phases. The choice now is delivery sequence.</p>
+    </div>
+  </section>
+
+  <section class="pivot">
+    <div class="pivot-card">
+      <p class="sec-label">The decision point</p>
+      <h2>Open question:</h2>
+      <p>We have a clear working view of the architecture needed for end-to-end reporting across Caprock's lead generation flow.</p>
+      <p class="pivot-question">The question now is <strong>which pieces you want in scope first</strong>, and in what priority order.</p>
     </div>
   </section>
 
@@ -285,16 +325,16 @@
       <h2>Natural ways to phase value</h2>
     </div>
     <div class="sec-body">
-      <p>These are the pieces that could be grouped into one release or sequenced as useful slices. The order should follow Caprock's most immediate pain.</p>
+      <p>These are the pieces that could be grouped into one release or sequenced as useful slices. The order should follow what Caprock most wants in scope first.</p>
 
       <div class="chunk-list">
-        <article class="chunk">
+        <article class="chunk featured">
           <div class="chunk-top">
             <h3>Tracking and attribution foundation</h3>
             <span class="tag">Enabler</span>
           </div>
-          <p>Clean up forms, calls, campaign fields, source capture, and key GA4 events before new reporting work inherits today's attribution gaps.</p>
-          <p>Start here if Caprock needs confidence in the inputs before investing in more reporting views.</p>
+          <p>Establish the shared data layer the rest of the work sits on: consistent campaign, source, channel, and KPI definitions, clean form and call capture, reliable GA4 events, and a repeatable accuracy check.</p>
+          <p>Every downstream readout inherits the quality of this layer, so it comes first.</p>
         </article>
 
         <article class="chunk">
@@ -302,7 +342,7 @@
             <h3>Paid media performance readout</h3>
             <span class="tag">Fast visibility</span>
           </div>
-          <p>Normalize paid media KPIs across Google Ads, LinkedIn, Simpli.fi, YouTube, and related channels, using the consistent metric set Caprock already requested.</p>
+          <p>Normalize paid media KPIs across Google Ads, LinkedIn, Simpli.fi, YouTube, and related channels, using the consistent metric set Caprock already requested, with breakdowns by campaign, creative, audience, and geography, plus pacing against target.</p>
         </article>
 
         <article class="chunk">
@@ -310,7 +350,7 @@
             <h3>Leads and MQLs by channel</h3>
             <span class="tag">Executive value</span>
           </div>
-          <p>Bring form fills, calls, and Caprock's structured MQL data into the reporting view so leadership can see which channels are producing real lead activity.</p>
+          <p>Bring form fills, calls, and Caprock's structured MQL data into the reporting view so leadership and the marketing team can see which channels and regions drive real lead activity, and how leads move through each funnel stage.</p>
         </article>
 
         <article class="chunk">
@@ -319,15 +359,6 @@
             <span class="tag">Context layer</span>
           </div>
           <p>Fold in GA4 website performance, organic search, Google Business Profile, organic social, and related non-paid sources.</p>
-        </article>
-
-        <article class="chunk">
-          <div class="chunk-top">
-            <h3>Campaign and geo breakdowns</h3>
-            <span class="tag">Decision layer</span>
-          </div>
-          <p>Standardize campaign and geography fields so the team can filter across channels by the way Caprock actually plans and evaluates work.</p>
-          <p>Start here if the next decision is market allocation, regional performance, campaign mix, or spend by geography.</p>
         </article>
 
         <article class="chunk">
@@ -344,7 +375,7 @@
   <section class="sec">
     <div class="sec-head">
       <p class="sec-label">Delivery paths</p>
-      <h2>Three reasonable ways to sequence it</h2>
+      <h2>Two reasonable ways to sequence it</h2>
     </div>
     <div class="sec-body">
       <div class="paths">
@@ -366,20 +397,15 @@
           <p>Pick the highest-value slices first, while keeping the same shared foundation underneath.</p>
           <ul>
             <li>Best for getting useful reporting into hands sooner.</li>
-            <li>Lets Caprock validate direction before every later detail is locked.</li>
-            <li>Requires choosing which pain to solve first.</li>
+            <li>Lets Caprock validate direction on real deliverables as they ship.</li>
+            <li>Requires choosing what to put in scope first.</li>
           </ul>
         </article>
+      </div>
 
-        <article class="path">
-          <h3>Path C: first release tied to a date</h3>
-          <p>Shape the first slice around an upcoming meeting, board cycle, budget decision, or reporting deadline.</p>
-          <ul>
-            <li>Best when a real date matters more than perfect completeness.</li>
-            <li>Can combine paid media, MQLs, or executive views depending on the meeting.</li>
-            <li>Anything outside that first deadline moves to the next release.</li>
-          </ul>
-        </article>
+      <div class="callout">
+        <h3>Why we lean toward phasing.</h3>
+        <p>Phasing puts trustworthy reporting in your hands early, lets Caprock confirm direction on real deliverables, and builds each slice on the same shared foundation so later phases extend the work cleanly. You decide what carries the most value, and we scope from there.</p>
       </div>
     </div>
   </section>
@@ -387,10 +413,10 @@
   <section class="sec" id="decision">
     <div class="sec-head">
       <p class="sec-label">Client decision</p>
-      <h2>What we need from you now</h2>
+      <h2>What we need you to confirm</h2>
     </div>
     <div class="sec-body">
-      <p>Before we turn this into a scope and timeline, we need to know how you want the work packaged. Choose one path. If you prefer phased delivery, rank the slices that would create the most immediate value.</p>
+      <p>Before we turn this into a scope and timeline, we need to know how you want the work packaged. Choose how you want it delivered. If you want it phased, rank the slices by what you most want in scope first.</p>
       <div class="choice">
         <div class="opt" role="button" tabindex="0" data-mode="all" aria-pressed="false">
           <span class="pick">A</span>
@@ -398,42 +424,35 @@
         </div>
         <div class="opt" role="button" tabindex="0" data-mode="phased" aria-pressed="false">
           <span class="pick">B</span>
-          <div><h4>Phase the project by priority</h4><p>Deliver the most valuable chunks first, then continue building on the same foundation.</p></div>
-        </div>
-        <div class="opt" role="button" tabindex="0" data-mode="deadline" aria-pressed="false">
-          <span class="pick">C</span>
-          <div><h4>Shape the first phase around a deadline</h4><p>Tell us the meeting or reporting cycle that matters, and we will scope a focused first release around it.</p></div>
+          <div><h4>Phase the project by priority</h4><p>Deliver the chunks you most want in scope first, then continue building on the same foundation.</p></div>
         </div>
       </div>
 
       <div id="ranker" class="ranker">
-        <p class="rank-instr">If phased, rank from most to least urgent. Tap in order, or just number them 1-6:</p>
-        <div class="slice" role="button" tabindex="0" data-id="tracking" data-label="Tracking and attribution foundation" aria-pressed="false">
-          <span class="rankbadge"></span><div><h4>Tracking and attribution foundation</h4><p>Forms, calls, campaign/source capture, and GA4 event hygiene.</p></div>
+        <p class="rank-instr">Tracking and attribution foundation is locked in first as the prerequisite. Tap the rest you want in scope, in order of priority to you:</p>
+        <div class="slice fixed" data-id="tracking" data-label="Tracking and attribution foundation" aria-disabled="true" aria-label="Tracking and attribution foundation, locked as prerequisite, rank 1">
+          <span class="rankbadge">1</span><div><h4>Tracking and attribution foundation <span class="prereq-chip">Prerequisite</span></h4><p>The trusted data layer every readout sits on: shared campaign, source, channel, and KPI definitions plus clean form, call, and GA4 inputs.</p></div>
         </div>
         <div class="slice" role="button" tabindex="0" data-id="paid" data-label="Paid media performance readout" aria-pressed="false">
-          <span class="rankbadge"></span><div><h4>Paid media performance readout</h4><p>One consistent view across paid channels.</p></div>
+          <span class="rankbadge"></span><div><h4>Paid media performance readout</h4><p>One consistent view across paid channels, sliced by campaign, creative, audience, and geo.</p></div>
         </div>
         <div class="slice" role="button" tabindex="0" data-id="leads" data-label="Leads and MQLs by channel" aria-pressed="false">
-          <span class="rankbadge"></span><div><h4>Leads and MQLs by channel</h4><p>What is actually driving form fills, calls, and MQLs.</p></div>
+          <span class="rankbadge"></span><div><h4>Leads and MQLs by channel</h4><p>What drives form fills, calls, and MQLs, stage by stage.</p></div>
         </div>
         <div class="slice" role="button" tabindex="0" data-id="web" data-label="Website, SEO, and organic visibility" aria-pressed="false">
           <span class="rankbadge"></span><div><h4>Website, SEO, and organic visibility</h4><p>Site behavior, organic search, organic social, and local visibility.</p></div>
-        </div>
-        <div class="slice" role="button" tabindex="0" data-id="campgeo" data-label="Campaign and geo breakdowns" aria-pressed="false">
-          <span class="rankbadge"></span><div><h4>Campaign and geo breakdowns</h4><p>Cross-channel slicing by campaign and geography.</p></div>
         </div>
         <div class="slice" role="button" tabindex="0" data-id="exec" data-label="Executive and board reporting" aria-pressed="false">
           <span class="rankbadge"></span><div><h4>Executive and board reporting</h4><p>Higher-level views for leadership and board conversations.</p></div>
         </div>
       </div>
 
-      <div id="answer" class="answer">Choose A, B, or C to begin.</div>
+      <div id="answer" class="answer">Choose A or B to begin.</div>
+      <p class="muted note">Copy the block above and paste it into your reply to us.</p>
       <div class="actions">
         <button class="action" type="button" id="copyAnswer">Copy answer</button>
-        <a class="action secondary" id="emailAnswer" href="mailto:simren@intellitonic.com?subject=Caprock%20reporting%20phasing%20preference">Email answer</a>
       </div>
-      <p class="status" id="copyStatus">Answer copied.</p>
+      <p class="status" id="copyStatus">Answer copied — paste it into your email reply.</p>
     </div>
   </section>
 
@@ -446,8 +465,8 @@
       <ul class="assume">
         <li><b>We are building a new dashboard experience.</b> The reporting will sit on a cleaner, validated data layer from the start.</li>
         <li><b>Daily refresh is the default.</b> Faster refresh is a scoping detail if there is a specific operational need.</li>
-        <li><b>MQLs can begin as a structured manual input.</b> Caprock's current process becomes cleaner before it becomes fully automated.</li>
-        <li><b>Dynamics is part of the path.</b> Form and lead attribution should be captured in a way that can flow into CRM and support ROI later.</li>
+        <li><b>MQLs can stay manual at first.</b> We will structure that data so it can be included in reporting now and automated later.</li>
+        <li><b>Dynamics CRM is part of the path.</b> Form and lead attribution should be captured in a way that can flow into CRM and support ROI later.</li>
       </ul>
       <p class="muted note">If any assumption is wrong, tell us now. Otherwise we will use these to prepare the next scope.</p>
     </div>
@@ -457,7 +476,7 @@
     <div class="next-card">
       <p class="sec-label">Next</p>
       <h2>After this decision</h2>
-      <p>Once Caprock confirms whole-system delivery or ranked phases, Intellitonic can convert this into the next planning layer: scope, timeline, responsibilities, and budget.</p>
+      <p>Once Caprock confirms whole-system delivery or ranked phases, Intellitonic can convert this into the next planning layer: scope, phasing and timeline.</p>
     </div>
   </section>
 
@@ -474,10 +493,10 @@
   (function(){
     var opts = Array.prototype.slice.call(document.querySelectorAll('.opt'));
     var ranker = document.getElementById('ranker');
-    var slices = Array.prototype.slice.call(document.querySelectorAll('.slice'));
+    var allSlices = Array.prototype.slice.call(document.querySelectorAll('.slice'));
+    var slices = Array.prototype.slice.call(document.querySelectorAll('.slice:not(.fixed)'));
     var answer = document.getElementById('answer');
     var copy = document.getElementById('copyAnswer');
-    var email = document.getElementById('emailAnswer');
     var status = document.getElementById('copyStatus');
     var mode = null;
     var order = [];
@@ -517,28 +536,21 @@
     }
 
     function labelFor(id){
-      for(var i=0;i<slices.length;i++){
-        if(slices[i].dataset.id===id) return slices[i].dataset.label;
+      for(var i=0;i<allSlices.length;i++){
+        if(allSlices[i].dataset.id===id) return allSlices[i].dataset.label;
       }
       return id;
     }
 
     function currentAnswer(){
-      if(mode==='all') return 'Caprock delivery preference: build the whole system before deployment.';
-      if(mode==='deadline') return 'Caprock delivery preference: shape the first phase around a near-term meeting or reporting deadline. Deadline/details: [client to fill in].';
+      if(mode==='all') return 'We want to build the whole system before deployment.';
       if(mode==='phased'){
-        if(order.length===0) return 'Caprock delivery preference: phase the project by priority. Priority ranking still needed.';
-        return 'Caprock delivery preference: phase the project by priority.\nPriority ranking:\n' + order.map(function(id,i){
-          return (i+1) + '. ' + labelFor(id);
+        if(order.length===0) return 'We want to phase the project by priority. Tracking and attribution foundation comes first as the prerequisite; ranking of the rest still needed.';
+        return 'We want to phase the project by priority.\nWhat we want in scope, in order:\n1. Tracking and attribution foundation (prerequisite)\n' + order.map(function(id,i){
+          return (i+2) + '. ' + labelFor(id);
         }).join('\n');
       }
-      return 'Caprock delivery preference: [not selected yet].';
-    }
-
-    function mailtoUrl(){
-      var subject = encodeURIComponent('Caprock reporting phasing preference');
-      var body = encodeURIComponent(currentAnswer() + '\n\nSubmitted from: ' + window.location.href);
-      return 'mailto:simren@intellitonic.com?subject=' + subject + '&body=' + body;
+      return 'We have not selected a delivery preference yet.';
     }
 
     function render(){
@@ -547,11 +559,10 @@
       slices.forEach(function(s){
         var idx = order.indexOf(s.dataset.id);
         var badge = s.querySelector('.rankbadge');
-        if(idx>=0){ s.classList.add('ranked'); badge.textContent = (idx+1); s.setAttribute('aria-pressed','true'); }
-        else { s.classList.remove('ranked'); badge.textContent=''; s.setAttribute('aria-pressed','false'); }
+        if(idx>=0){ s.classList.add('ranked'); badge.textContent = (idx+2); s.setAttribute('aria-pressed','true'); s.setAttribute('aria-label', s.dataset.label + ', ranked ' + (idx+2)); }
+        else { s.classList.remove('ranked'); badge.textContent=''; s.setAttribute('aria-pressed','false'); s.removeAttribute('aria-label'); }
       });
       answer.textContent = currentAnswer();
-      email.setAttribute('href', mailtoUrl());
       status.style.display = 'none';
     }
 
@@ -587,31 +598,24 @@
 
     copy.addEventListener('click', function(){
       var text = currentAnswer();
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text).then(function(){
-          status.textContent = 'Answer copied.';
-          status.style.display = 'block';
-        });
-      } else {
+      function confirmCopied(){
+        status.textContent = 'Answer copied — paste it into your email reply.';
+        status.style.display = 'block';
+      }
+      function fallbackCopy(){
         var area = document.createElement('textarea');
         area.value = text;
         document.body.appendChild(area);
         area.select();
         document.execCommand('copy');
         document.body.removeChild(area);
-        status.textContent = 'Answer copied.';
-        status.style.display = 'block';
+        confirmCopied();
       }
-    });
-
-    email.addEventListener('click', function(){
-      var text = currentAnswer();
       if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text).catch(function(){});
+        navigator.clipboard.writeText(text).then(confirmCopied).catch(fallbackCopy);
+      } else {
+        fallbackCopy();
       }
-      email.setAttribute('href', mailtoUrl());
-      status.textContent = 'Opening email draft. The answer was also copied in case your browser blocks email links.';
-      status.style.display = 'block';
     });
 
     setupMotion();
