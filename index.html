@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caprock - Discovery Readout and Phasing Options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F7FB; --card:#FFFFFF; --ink:#03264F; --muted:#5A6B82; --line:#DCE3EC;
+    --navy:#03264F; --copper:#B36924; --copper-ink:#8A4E1C; --copper-bg:#F6EADC; --copper-lt:#D98A45;
+    --p1:#1E5AA0; --p1-bg:#E4EDF7; --success:#1F6F5B; --success-bg:#E7F2EE;
+    --warn:#7A5A16; --warn-bg:#F7EFD8;
+    --sans:"Plus Jakarta Sans",system-ui,sans-serif;
+    --mono:"IBM Plex Mono",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:18.75px;line-height:1.6;
+    -webkit-font-smoothing:antialiased;padding:48px 26px 76px}
+  button,input,textarea{font:inherit}
+  .wrap{max-width:860px;margin:0 auto}
+
+  .topline{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:28px}
+  .brand{font-family:var(--mono);font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--copper-ink);font-weight:600}
+  .draft{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--copper-ink);
+    background:var(--copper-bg);border-radius:22px;padding:6px 14px;white-space:nowrap}
+
+  h1{font-family:var(--sans);font-weight:800;font-size:38px;line-height:1.08;letter-spacing:0;margin:0 0 8px;max-width:15ch}
+  .rule{width:68px;height:4px;background:var(--copper);border-radius:2px;margin:12px 0 20px}
+  .lede{font-size:20px;font-weight:500;color:var(--ink);margin:0;line-height:1.5;max-width:62ch}
+
+  .sec{display:grid;grid-template-columns:220px 1fr;column-gap:38px;row-gap:18px;align-items:start;
+    border-top:1px solid var(--line);margin-top:46px;padding-top:46px}
+  .sec-label{font-family:var(--mono);font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--copper-ink);font-weight:600;margin:0 0 10px}
+  .sec-head h2{font-family:var(--sans);font-weight:700;font-size:26px;line-height:1.16;letter-spacing:0;margin:0;color:var(--ink)}
+  .sec-body > :first-child{margin-top:0}
+  .sec-body > :last-child{margin-bottom:0}
+  p{margin:0 0 16px}
+  p.muted{color:var(--muted)}
+  strong{font-weight:700}
+
+  .callout{border:1px solid var(--line);border-left:5px solid var(--copper);border-radius:0 14px 14px 0;background:var(--card);padding:18px 20px;margin:0 0 18px}
+  .callout h3{font-size:20px;line-height:1.2;margin:0 0 7px;font-weight:800;color:var(--ink)}
+  .callout p{font-size:17px;color:var(--muted);margin:0}
+  .callout.strong{background:var(--p1-bg);border-left-color:var(--navy)}
+
+  ul.clean{list-style:none;padding:0;margin:0}
+  ul.clean li{position:relative;padding:9px 0 9px 28px;border-bottom:1px solid var(--line);font-size:18px}
+  ul.clean li:last-child{border-bottom:0}
+  ul.clean li::before{content:"";position:absolute;left:0;top:20px;width:13px;height:2px;background:var(--copper);border-radius:2px}
+  ul.clean li b{font-weight:700}
+  .note{margin-top:16px}
+
+  .flow{margin:0}
+  .step{display:flex;gap:16px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}
+  .step:last-child{border-bottom:0}
+  .num{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--copper-ink);color:#fff;font-family:var(--mono);font-size:15px;font-weight:600;margin-top:1px}
+  .step.key .num{background:var(--navy)}
+  .step-body h4{margin:0 0 3px;font-size:18.75px;font-weight:700;color:var(--ink)}
+  .step-body p{margin:0;font-size:17px;color:var(--muted)}
+  .step.key .step-body p{color:var(--copper-ink);font-weight:600}
+
+  .chunk-list{display:grid;gap:13px;margin:0}
+  .chunk{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px 18px}
+  .chunk-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}
+  .chunk h3{font-size:20px;line-height:1.18;margin:0;font-weight:800;color:var(--ink)}
+  .tag{flex:none;font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--copper-ink);background:var(--copper-bg);border-radius:999px;padding:5px 9px;white-space:nowrap}
+  .chunk p{font-size:16.75px;color:var(--muted);margin:0 0 10px;line-height:1.5}
+  .chunk-meta{display:grid;gap:8px;margin-top:11px}
+  .mini{font-size:15px;line-height:1.45;color:var(--ink);background:var(--paper);border-radius:9px;padding:10px 11px}
+  .mini b{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--copper-ink);display:block;margin-bottom:3px}
+
+  .paths{display:grid;gap:13px}
+  .path{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px}
+  .path.recommended{border-color:var(--p1);background:var(--p1-bg)}
+  .path h3{font-size:20px;margin:0 0 6px;font-weight:800;color:var(--ink)}
+  .path p{font-size:16.75px;color:var(--muted);margin:0 0 12px}
+  .path ul{list-style:none;margin:0;padding:0}
+  .path li{position:relative;padding:7px 0 7px 22px;font-size:15.75px;color:var(--ink);border-top:1px solid rgba(3,38,79,.09)}
+  .path li::before{content:"";position:absolute;left:0;top:17px;width:10px;height:2px;background:var(--copper);border-radius:2px}
+
+  .choice{display:grid;gap:12px;margin:0 0 8px}
+  .opt{display:flex;gap:14px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:15px 17px;background:#fff;cursor:pointer;transition:border-color .12s,background .12s}
+  .opt:hover{border-color:#C6D2E2}
+  .opt[aria-pressed="true"]{border-color:var(--p1);background:var(--p1-bg)}
+  .opt .pick{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--copper-ink);color:#fff;font-family:var(--mono);font-weight:600;font-size:14px;margin-top:1px}
+  .opt h4{margin:0 0 2px;font-size:18px;font-weight:700;color:var(--ink)}
+  .opt p{margin:0;font-size:15.5px;color:var(--muted)}
+  .opt[aria-pressed="true"] p{color:var(--ink)}
+  .opt:focus-visible,.slice:focus-visible,.action:focus-visible{outline:2px solid var(--p1);outline-offset:2px}
+
+  .ranker{display:none;margin:14px 0 0}
+  .rank-instr{font-size:15.5px;font-weight:600;margin:0 0 11px;color:var(--ink)}
+  .slice{display:flex;gap:13px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;cursor:pointer;margin-bottom:9px;transition:border-color .12s}
+  .slice:last-child{margin-bottom:0}
+  .slice:hover{border-color:#C6D2E2}
+  .slice.ranked{border-color:var(--copper)}
+  .slice .rankbadge{flex:none;display:grid;place-items:center;width:27px;height:27px;border-radius:50%;border:1.5px solid var(--line);color:var(--muted);font-family:var(--mono);font-weight:600;font-size:14px}
+  .slice.ranked .rankbadge{background:var(--copper-ink);border-color:var(--copper-ink);color:#fff}
+  .slice h4{margin:0 0 1px;font-size:16.5px;font-weight:700;color:var(--ink)}
+  .slice p{margin:0;font-size:14.5px;color:var(--muted)}
+  .answer{margin-top:16px;font-family:var(--mono);font-size:14px;line-height:1.55;color:var(--ink);background:var(--p1-bg);border-radius:10px;padding:13px 16px;white-space:pre-wrap}
+  .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .action{border:0;border-radius:999px;background:var(--navy);color:#fff;font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;padding:9px 13px;cursor:pointer}
+  .action.secondary{background:var(--copper-ink)}
+  .status{font-size:14px;color:var(--success);margin:9px 0 0;display:none}
+
+  ul.assume{list-style:none;padding:0;margin:0}
+  ul.assume li{position:relative;padding:9px 0 9px 28px;border-bottom:1px solid var(--line);font-size:17.5px;color:var(--ink)}
+  ul.assume li:last-child{border-bottom:0}
+  ul.assume li::before{content:"";position:absolute;left:0;top:18px;width:13px;height:2px;background:var(--copper);border-radius:2px}
+  ul.assume li b{font-weight:700}
+
+  .next{border-top:1px solid var(--line);margin-top:46px;padding-top:46px}
+  .next-card{background:var(--navy);color:#fff;border-radius:15px;padding:24px 26px}
+  .next-card .sec-label{color:var(--copper-lt)}
+  .next-card h2{font-family:var(--sans);font-weight:700;font-size:26px;letter-spacing:0;color:#fff;margin:0 0 9px}
+  .next-card p{color:#D7E0EC;font-size:18px;margin:0;line-height:1.55}
+
+  footer{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+  @media(max-width:760px){
+    .sec{grid-template-columns:1fr;column-gap:0;row-gap:14px;margin-top:38px;padding-top:38px}
+    .next{margin-top:38px;padding-top:38px}
+  }
+  @media(max-width:560px){
+    body{padding:32px 18px 52px}
+    h1{font-size:31px}
+    .sec-head h2,.next-card h2{font-size:23px}
+    .lede{font-size:18px}
+    .chunk-top{display:block}
+    .tag{display:inline-block;margin-top:9px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topline">
+    <span class="brand">Caprock x Intellitonic</span>
+    <span class="draft">Discovery readout</span>
+  </div>
+
+  <h1>Discovery readout and phasing options</h1>
+  <div class="rule"></div>
+  <p class="lede">What we heard, what it implies for the reporting architecture, and the delivery decision we need before building a scope, timeline, and budget.</p>
+
+  <section class="sec">
+    <div class="sec-head">
+      <p class="sec-label">01 · Readout</p>
+      <h2>What discovery clarified</h2>
+    </div>
+    <div class="sec-body">
+      <div class="callout strong">
+        <h3>Reliability is the center of the project.</h3>
+        <p>Caprock's stated priority is a reliable marketing data system. Dashboards are the useful surface, but the work succeeds or fails on trusted data, consistent definitions, and a process for checking accuracy.</p>
+      </div>
+      <ul class="clean">
+        <li><b>Reporting needs to span channels.</b> Paid, organic, web, email, calls, forms, MQLs, geo, and campaign views all need to line up.</li>
+        <li><b>The dashboard can remain familiar.</b> The issue is how it is fed, not whether charts can be drawn.</li>
+        <li><b>Caprock's manual tracker exists because trust is missing.</b> The replacement must make data easier to verify, not just easier to display.</li>
+        <li><b>Closed-loop ROI is a later maturity step.</b> Dynamics matters, but the immediate need is to preserve source and campaign data so ROI can be connected cleanly later.</li>
+      </ul>
+      <div class="callout">
+        <h3>The requirements fall into four buckets.</h3>
+        <p>First: trustworthy data and refresh cadence. Second: flexible analysis, including custom dates, period comparisons, campaign views, geo, audience, and channel filters. Third: consistent performance reporting across paid, organic, website, calls, forms, email, SEO, and MQLs. Fourth: audience-specific outputs for marketing, leadership, board, and eventually regional teams.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <p class="sec-label">02 · Architecture</p>
+      <h2>The proposed reporting spine</h2>
+    </div>
+    <div class="sec-body">
+      <p>Every delivery path uses the same spine: collect the data, normalize it, validate it, then report from that trusted layer. This keeps the dashboard from becoming the place where every source, definition, and exception has to be solved by hand.</p>
+      <div class="flow">
+        <div class="step"><span class="num">1</span><div class="step-body"><h4>Collect</h4><p>Paid channels, organic channels, GA4, CallRail, forms, email, MQLs, and future CRM data.</p></div></div>
+        <div class="step key"><span class="num">2</span><div class="step-body"><h4>Unify and validate</h4><p>Shared campaign, channel, geo, date, and KPI definitions with an explicit quality check.</p></div></div>
+        <div class="step"><span class="num">3</span><div class="step-body"><h4>Report</h4><p>Dashboard views for marketing, leadership, channel detail, campaign detail, and board-ready summaries.</p></div></div>
+        <div class="step"><span class="num">4</span><div class="step-body"><h4>Extend</h4><p>BigQuery, Squid, Dynamics, and closed-loop ROI can be added as the data model matures.</p></div></div>
+      </div>
+      <p class="muted note">This is the foundation whether the project is delivered in one release or in phases. The choice now is delivery sequence, not a different architecture.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <p class="sec-label">03 · Work chunks</p>
+      <h2>Natural ways to phase value</h2>
+    </div>
+    <div class="sec-body">
+      <p>These are the pieces that could be grouped into one release or sequenced as useful slices. The order should follow Caprock's most immediate pain, not our assumptions.</p>
+
+      <div class="chunk-list">
+        <article class="chunk">
+          <div class="chunk-top">
+            <h3>Tracking and attribution foundation</h3>
+            <span class="tag">Enabler</span>
+          </div>
+          <p>Get forms, calls, campaigns, source fields, and key GA4 events into a cleaner state so later reporting does not inherit today's attribution gaps.</p>
+          <div class="chunk-meta">
+            <div class="mini"><b>Upfront value</b>Better source capture, fewer manual lookups, cleaner lead data.</div>
+            <div class="mini"><b>Best if</b>Caprock wants confidence that the rest of the reporting is being built on the right inputs.</div>
+          </div>
+        </article>
+
+        <article class="chunk">
+          <div class="chunk-top">
+            <h3>Paid media performance readout</h3>
+            <span class="tag">Fast visibility</span>
+          </div>
+          <p>Normalize paid media KPIs across Google Ads, LinkedIn, Simpli.fi, YouTube, and related channels, using the consistent metric set Caprock already requested.</p>
+          <div class="chunk-meta">
+            <div class="mini"><b>Upfront value</b>Replaces scattered paid views with one dependable summary and channel detail.</div>
+            <div class="mini"><b>Best if</b>The most urgent pain is budget, pacing, performance meetings, or paid-channel accountability.</div>
+          </div>
+        </article>
+
+        <article class="chunk">
+          <div class="chunk-top">
+            <h3>Leads and MQLs by channel</h3>
+            <span class="tag">Executive value</span>
+          </div>
+          <p>Bring form fills, calls, and Caprock's structured MQL data into the reporting view so leadership can see which channels are producing real lead activity.</p>
+          <div class="chunk-meta">
+            <div class="mini"><b>Upfront value</b>Moves beyond impressions and clicks toward the question leadership keeps asking.</div>
+            <div class="mini"><b>Best if</b>The immediate need is to explain what is driving leads before full CRM automation is ready.</div>
+          </div>
+        </article>
+
+        <article class="chunk">
+          <div class="chunk-top">
+            <h3>Website, SEO, and organic visibility</h3>
+            <span class="tag">Context layer</span>
+          </div>
+          <p>Fold in GA4 website performance, organic search, Google Business Profile, organic social, and related non-paid sources.</p>
+          <div class="chunk-meta">
+            <div class="mini"><b>Upfront value</b>Shows the non-paid contribution that paid-only reporting misses.</div>
+            <div class="mini"><b>Best if</b>Caprock wants the first release to explain the full marketing mix, not just media spend.</div>
+          </div>
+        </article>
+
+        <article class="chunk">
+          <div class="chunk-top">
+            <h3>Campaign and geo breakdowns</h3>
+            <span class="tag">Decision layer</span>
+          </div>
+          <p>Standardize campaign and geography fields so the team can filter across channels by the way Caprock actually plans and evaluates work.</p>
+          <div class="chunk-meta">
+            <div class="mini"><b>Upfront value</b>Turns the dashboard from channel reporting into planning support.</div>
+            <div class="mini"><b>Best if</b>The key decisions are market allocation, regional performance, campaign mix, or spend by geography.</div>
+          </div>
+        </article>
+
+        <article class="chunk">
+          <div class="chunk-top">
+            <h3>Executive and board reporting</h3>
+            <span class="tag">Audience layer</span>
+          </div>
+          <p>Create higher-level summaries for leadership and board conversations, focused on leads, investment, trend, and what needs attention.</p>
+          <div class="chunk-meta">
+            <div class="mini"><b>Upfront value</b>Turns the same data spine into meeting-ready views for different audiences.</div>
+            <div class="mini"><b>Best if</b>A leadership or board cycle is the forcing function for the first release.</div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <p class="sec-label">04 · Delivery paths</p>
+      <h2>Three reasonable ways to sequence it</h2>
+    </div>
+    <div class="sec-body">
+      <div class="paths">
+        <article class="path">
+          <h3>Path A: one complete release</h3>
+          <p>Build the system as a full package before Caprock adopts it.</p>
+          <ul>
+            <li>Best for minimizing transition churn.</li>
+            <li>More complete at launch.</li>
+            <li>Longer time before the first usable deliverable.</li>
+          </ul>
+        </article>
+
+        <article class="path recommended">
+          <h3>Path B: phased release by priority</h3>
+          <p>Pick the highest-value slices first, while keeping the same shared foundation underneath.</p>
+          <ul>
+            <li>Best for getting useful reporting into hands sooner.</li>
+            <li>Lets Caprock validate direction before every later detail is locked.</li>
+            <li>Requires choosing which pain to solve first.</li>
+          </ul>
+        </article>
+
+        <article class="path">
+          <h3>Path C: first release tied to a date</h3>
+          <p>Shape the first slice around an upcoming meeting, board cycle, budget decision, or reporting deadline.</p>
+          <ul>
+            <li>Best when a real date matters more than perfect completeness.</li>
+            <li>Can combine paid media, MQLs, or executive views depending on the meeting.</li>
+            <li>Anything outside that first deadline moves to the next release.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="decision">
+    <div class="sec-head">
+      <p class="sec-label">05 · Client decision</p>
+      <h2>What we need from you now</h2>
+    </div>
+    <div class="sec-body">
+      <p>Before we turn this into a scope and timeline, we need to know how you want the work packaged. Choose one path. If you prefer phased delivery, rank the slices that would create the most immediate value.</p>
+      <div class="choice">
+        <div class="opt" role="button" tabindex="0" data-mode="all" aria-pressed="false">
+          <span class="pick">A</span>
+          <div><h4>Build the whole system before deployment</h4><p>Scope one complete release and adopt it once the full reporting system is ready.</p></div>
+        </div>
+        <div class="opt" role="button" tabindex="0" data-mode="phased" aria-pressed="false">
+          <span class="pick">B</span>
+          <div><h4>Phase the project by priority</h4><p>Deliver the most valuable chunks first, then continue building on the same foundation.</p></div>
+        </div>
+        <div class="opt" role="button" tabindex="0" data-mode="deadline" aria-pressed="false">
+          <span class="pick">C</span>
+          <div><h4>Shape the first phase around a deadline</h4><p>Tell us the meeting or reporting cycle that matters, and we will scope a focused first release around it.</p></div>
+        </div>
+      </div>
+
+      <div id="ranker" class="ranker">
+        <p class="rank-instr">If phased, rank from most to least urgent. Tap in order, or just number them 1-6:</p>
+        <div class="slice" role="button" tabindex="0" data-id="tracking" data-label="Tracking and attribution foundation" aria-pressed="false">
+          <span class="rankbadge"></span><div><h4>Tracking and attribution foundation</h4><p>Forms, calls, campaign/source capture, and GA4 event hygiene.</p></div>
+        </div>
+        <div class="slice" role="button" tabindex="0" data-id="paid" data-label="Paid media performance readout" aria-pressed="false">
+          <span class="rankbadge"></span><div><h4>Paid media performance readout</h4><p>One consistent view across paid channels.</p></div>
+        </div>
+        <div class="slice" role="button" tabindex="0" data-id="leads" data-label="Leads and MQLs by channel" aria-pressed="false">
+          <span class="rankbadge"></span><div><h4>Leads and MQLs by channel</h4><p>What is actually driving form fills, calls, and MQLs.</p></div>
+        </div>
+        <div class="slice" role="button" tabindex="0" data-id="web" data-label="Website, SEO, and organic visibility" aria-pressed="false">
+          <span class="rankbadge"></span><div><h4>Website, SEO, and organic visibility</h4><p>Site behavior, organic search, organic social, and local visibility.</p></div>
+        </div>
+        <div class="slice" role="button" tabindex="0" data-id="campgeo" data-label="Campaign and geo breakdowns" aria-pressed="false">
+          <span class="rankbadge"></span><div><h4>Campaign and geo breakdowns</h4><p>Cross-channel slicing by campaign and geography.</p></div>
+        </div>
+        <div class="slice" role="button" tabindex="0" data-id="exec" data-label="Executive and board reporting" aria-pressed="false">
+          <span class="rankbadge"></span><div><h4>Executive and board reporting</h4><p>Higher-level views for leadership and board conversations.</p></div>
+        </div>
+      </div>
+
+      <div id="answer" class="answer">Choose A, B, or C to begin.</div>
+      <div class="actions">
+        <button class="action" type="button" id="copyAnswer">Copy answer</button>
+        <button class="action secondary" type="button" id="emailAnswer">Email answer</button>
+      </div>
+      <p class="status" id="copyStatus">Answer copied.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-head">
+      <p class="sec-label">06 · Working assumptions</p>
+      <h2>What we will assume unless corrected</h2>
+    </div>
+    <div class="sec-body">
+      <ul class="assume">
+        <li><b>The dashboard remains the reporting surface.</b> We are improving the data layer that feeds it.</li>
+        <li><b>Daily refresh is the default.</b> Faster refresh is a scoping detail if there is a specific operational need.</li>
+        <li><b>MQLs can begin as a structured manual input.</b> Caprock's current process becomes cleaner before it becomes fully automated.</li>
+        <li><b>Dynamics is part of the path.</b> Form and lead attribution should be captured in a way that can flow into CRM and support ROI later.</li>
+      </ul>
+      <p class="muted note">If any assumption is wrong, tell us now. Otherwise we will use these to prepare the next scope.</p>
+    </div>
+  </section>
+
+  <section class="next">
+    <div class="next-card">
+      <p class="sec-label">07 · Next</p>
+      <h2>After this decision</h2>
+      <p>Once Caprock confirms whole-system delivery or ranked phases, Intellitonic can convert this into the next planning layer: scope, timeline, responsibilities, and budget. The architecture does not need to change first. The delivery sequence does.</p>
+    </div>
+  </section>
+
+  <footer>
+    <span>Prepared by Intellitonic</span>
+    <span>Draft for discussion</span>
+  </footer>
+
+</div>
+
+<script>
+  (function(){
+    var opts = Array.prototype.slice.call(document.querySelectorAll('.opt'));
+    var ranker = document.getElementById('ranker');
+    var slices = Array.prototype.slice.call(document.querySelectorAll('.slice'));
+    var answer = document.getElementById('answer');
+    var copy = document.getElementById('copyAnswer');
+    var email = document.getElementById('emailAnswer');
+    var status = document.getElementById('copyStatus');
+    var mode = null;
+    var order = [];
+
+    function labelFor(id){
+      for(var i=0;i<slices.length;i++){
+        if(slices[i].dataset.id===id) return slices[i].dataset.label;
+      }
+      return id;
+    }
+
+    function currentAnswer(){
+      if(mode==='all') return 'Caprock delivery preference: build the whole system before deployment.';
+      if(mode==='deadline') return 'Caprock delivery preference: shape the first phase around a near-term meeting or reporting deadline. Deadline/details: [client to fill in].';
+      if(mode==='phased'){
+        if(order.length===0) return 'Caprock delivery preference: phase the project by priority. Priority ranking still needed.';
+        return 'Caprock delivery preference: phase the project by priority.\nPriority ranking:\n' + order.map(function(id,i){
+          return (i+1) + '. ' + labelFor(id);
+        }).join('\n');
+      }
+      return 'Caprock delivery preference: [not selected yet].';
+    }
+
+    function render(){
+      opts.forEach(function(o){ o.setAttribute('aria-pressed', o.dataset.mode===mode ? 'true':'false'); });
+      ranker.style.display = (mode==='phased') ? 'block' : 'none';
+      slices.forEach(function(s){
+        var idx = order.indexOf(s.dataset.id);
+        var badge = s.querySelector('.rankbadge');
+        if(idx>=0){ s.classList.add('ranked'); badge.textContent = (idx+1); s.setAttribute('aria-pressed','true'); }
+        else { s.classList.remove('ranked'); badge.textContent=''; s.setAttribute('aria-pressed','false'); }
+      });
+      answer.textContent = currentAnswer();
+      status.style.display = 'none';
+    }
+
+    opts.forEach(function(o){
+      function choose(){
+        mode=o.dataset.mode;
+        if(mode!=='phased'){ order=[]; }
+        render();
+      }
+      o.addEventListener('click', choose);
+      o.addEventListener('keydown', function(e){
+        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); choose(); }
+      });
+    });
+
+    slices.forEach(function(s){
+      function toggle(){
+        if(mode!=='phased'){ mode='phased'; }
+        var id=s.dataset.id;
+        var i=order.indexOf(id);
+        if(i>=0){ order.splice(i,1); }
+        else { order.push(id); }
+        render();
+      }
+      s.addEventListener('click', toggle);
+      s.addEventListener('keydown', function(e){
+        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(); }
+      });
+    });
+
+    copy.addEventListener('click', function(){
+      var text = currentAnswer();
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){
+          status.textContent = 'Answer copied.';
+          status.style.display = 'block';
+        });
+      } else {
+        var area = document.createElement('textarea');
+        area.value = text;
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand('copy');
+        document.body.removeChild(area);
+        status.textContent = 'Answer copied.';
+        status.style.display = 'block';
+      }
+    });
+
+    email.addEventListener('click', function(){
+      var subject = encodeURIComponent('Caprock dashboard phasing preference');
+      var body = encodeURIComponent(currentAnswer() + '\n\nSubmitted from: ' + window.location.href);
+      window.location.href = 'mailto:wesleydavis@me.com?subject=' + subject + '&body=' + body;
+    });
+
+    render();
+  })();
+</script>
+</body>
+</html>
