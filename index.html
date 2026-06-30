@@ -222,7 +222,7 @@
       </div>
       <div class="hero-insights" aria-label="Readout summary">
         <div class="hero-insight"><b>Core problem</b><span>Trustworthy data, not prettier charts.</span></div>
-        <div class="hero-insight"><b>Shared spine</b><span>Collect, normalize, validate, report.</span></div>
+        <div class="hero-insight"><b>Shared foundation</b><span>Collect, normalize, validate, report.</span></div>
         <div class="hero-insight"><b>Decision needed</b><span>Whole release, phased priority, or date-led first slice.</span></div>
       </div>
     </div>
@@ -246,7 +246,7 @@
       </div>
       <ul class="clean">
         <li><b>Reporting needs to span channels.</b> Paid, organic, web, email, calls, forms, MQLs, geo, and campaign views all need to line up.</li>
-        <li><b>The dashboard can remain familiar.</b> The issue is how it is fed, not whether charts can be drawn.</li>
+        <li><b>The new dashboard should feel familiar.</b> The difference is the cleaner data foundation underneath it.</li>
         <li><b>Caprock's manual tracker exists because trust is missing.</b> The replacement must make data easier to verify, not just easier to display.</li>
         <li><b>Closed-loop ROI is a later maturity step.</b> Dynamics matters, but the immediate need is to preserve source and campaign data so ROI can be connected cleanly later.</li>
       </ul>
@@ -256,7 +256,7 @@
           <li><span><b>Trustworthy data and refresh cadence.</b> The system needs reliable inputs, clear definitions, and a repeatable way to check accuracy.</span></li>
           <li><span><b>Flexible analysis.</b> Caprock needs custom dates, period comparisons, campaign views, geo, audience, and channel filters.</span></li>
           <li><span><b>Consistent performance reporting.</b> Paid, organic, website, calls, forms, email, SEO, and MQLs need to sit in one reporting frame.</span></li>
-          <li><span><b>Audience-specific outputs.</b> Marketing, leadership, board, and eventually regional teams need different views from the same data spine.</span></li>
+          <li><span><b>Audience-specific outputs.</b> Marketing, leadership, board, and eventually regional teams need different views from the same reporting foundation.</span></li>
         </ol>
       </div>
     </div>
@@ -265,14 +265,14 @@
   <section class="sec">
     <div class="sec-head">
       <p class="sec-label">Architecture</p>
-      <h2>The proposed reporting spine</h2>
+      <h2>The proposed reporting foundation</h2>
     </div>
     <div class="sec-body">
-      <p>Every delivery path uses the same spine: collect the data, normalize it, validate it, then report from that trusted layer. This keeps the dashboard from becoming the place where every source, definition, and exception has to be solved by hand.</p>
+      <p>Every delivery path uses the same foundation: collect the data, normalize it, validate it, then report from that trusted layer. This keeps the new dashboard focused on clear decisions instead of forcing it to solve every source, definition, and exception by hand.</p>
       <div class="flow">
         <div class="step"><span class="num">1</span><div class="step-body"><h4>Collect</h4><p>Paid channels, organic channels, GA4, CallRail, forms, email, MQLs, and future CRM data.</p></div></div>
         <div class="step key"><span class="num">2</span><div class="step-body"><h4>Unify and validate</h4><p>Shared campaign, channel, geo, date, and KPI definitions with an explicit quality check.</p></div></div>
-        <div class="step"><span class="num">3</span><div class="step-body"><h4>Report</h4><p>Dashboard views for marketing, leadership, channel detail, campaign detail, and board-ready summaries.</p></div></div>
+        <div class="step"><span class="num">3</span><div class="step-body"><h4>Report</h4><p>New reporting views for marketing, leadership, channel detail, campaign detail, and board-ready summaries.</p></div></div>
         <div class="step"><span class="num">4</span><div class="step-body"><h4>Extend</h4><p>BigQuery, Squid, Dynamics, and closed-loop ROI can be added as the data model matures.</p></div></div>
       </div>
       <p class="muted note">This is the foundation whether the project is delivered in one release or in phases. The choice now is delivery sequence.</p>
@@ -293,7 +293,7 @@
             <h3>Tracking and attribution foundation</h3>
             <span class="tag">Enabler</span>
           </div>
-          <p>Clean up forms, calls, campaign fields, source capture, and key GA4 events before dashboard work inherits today's attribution gaps.</p>
+          <p>Clean up forms, calls, campaign fields, source capture, and key GA4 events before new reporting work inherits today's attribution gaps.</p>
           <p>Start here if Caprock needs confidence in the inputs before investing in more reporting views.</p>
         </article>
 
@@ -431,7 +431,7 @@
       <div id="answer" class="answer">Choose A, B, or C to begin.</div>
       <div class="actions">
         <button class="action" type="button" id="copyAnswer">Copy answer</button>
-        <a class="action secondary" id="emailAnswer" href="mailto:simren@intellitonic.com?subject=Caprock%20dashboard%20phasing%20preference">Email answer</a>
+        <a class="action secondary" id="emailAnswer" href="mailto:simren@intellitonic.com?subject=Caprock%20reporting%20phasing%20preference">Email answer</a>
       </div>
       <p class="status" id="copyStatus">Answer copied.</p>
     </div>
@@ -444,7 +444,7 @@
     </div>
     <div class="sec-body">
       <ul class="assume">
-        <li><b>The dashboard remains the reporting surface.</b> We are improving the data layer that feeds it.</li>
+        <li><b>We are building a new dashboard experience.</b> The reporting will sit on a cleaner, validated data layer from the start.</li>
         <li><b>Daily refresh is the default.</b> Faster refresh is a scoping detail if there is a specific operational need.</li>
         <li><b>MQLs can begin as a structured manual input.</b> Caprock's current process becomes cleaner before it becomes fully automated.</li>
         <li><b>Dynamics is part of the path.</b> Form and lead attribution should be captured in a way that can flow into CRM and support ROI later.</li>
@@ -536,7 +536,7 @@
     }
 
     function mailtoUrl(){
-      var subject = encodeURIComponent('Caprock dashboard phasing preference');
+      var subject = encodeURIComponent('Caprock reporting phasing preference');
       var body = encodeURIComponent(currentAnswer() + '\n\nSubmitted from: ' + window.location.href);
       return 'mailto:simren@intellitonic.com?subject=' + subject + '&body=' + body;
     }
