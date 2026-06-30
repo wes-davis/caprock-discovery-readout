@@ -4,89 +4,122 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Caprock - Discovery Readout and Phasing Options</title>
+<meta name="description" content="Discovery readout and delivery phasing options for Caprock's reporting architecture decision.">
+<meta property="og:title" content="Caprock - Discovery Readout and Phasing Options">
+<meta property="og:description" content="A client-ready readout for choosing the reporting delivery path before scope, timeline, and budget.">
+<meta property="og:image" content="caprock-reporting-ambient.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#F4F7FB; --card:#FFFFFF; --ink:#03264F; --muted:#5A6B82; --line:#DCE3EC;
-    --navy:#03264F; --copper:#B36924; --copper-ink:#8A4E1C; --copper-bg:#F6EADC; --copper-lt:#D98A45;
-    --p1:#1E5AA0; --p1-bg:#E4EDF7; --success:#1F6F5B; --success-bg:#E7F2EE;
-    --warn:#7A5A16; --warn-bg:#F7EFD8;
+    --paper:#EEF3F7; --paper-2:#F8FAFC; --card:#FFFFFF; --ink:#062A52; --muted:#586B80; --line:#D8E2EC;
+    --navy:#062A52; --navy-2:#0A3B6C; --copper:#A9662F; --copper-ink:#7B4A25; --copper-bg:#F2E4D4; --copper-lt:#D18A4F;
+    --p1:#155A95; --p1-bg:#E4EEF7; --success:#1F6F5B; --success-bg:#E7F2EE;
+    --shadow:0 24px 70px rgba(6,42,82,.12);
+    --shadow-tight:0 14px 36px rgba(6,42,82,.09);
     --sans:"Plus Jakarta Sans",system-ui,sans-serif;
     --mono:"IBM Plex Mono",ui-monospace,monospace;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:18.75px;line-height:1.6;
-    -webkit-font-smoothing:antialiased;padding:48px 26px 76px}
+  body{margin:0;background:
+    linear-gradient(90deg,rgba(6,42,82,.045) 1px,transparent 1px),
+    linear-gradient(0deg,rgba(6,42,82,.035) 1px,transparent 1px),
+    linear-gradient(180deg,#F9FBFD 0%,var(--paper) 44%,#F7FAFC 100%);
+    background-size:56px 56px,56px 56px,auto;color:var(--ink);font-family:var(--sans);font-size:18px;line-height:1.62;
+    -webkit-font-smoothing:antialiased;padding:42px 28px 76px}
   button,input,textarea{font:inherit}
-  .wrap{max-width:860px;margin:0 auto}
+  .wrap{max-width:1120px;margin:0 auto}
+  .skip-link{position:absolute;left:20px;top:16px;transform:translateY(-140%);background:var(--navy);color:#fff;border-radius:10px;padding:9px 12px;z-index:2}
+  .skip-link:focus{transform:translateY(0)}
 
-  .topline{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:28px}
-  .brand{font-family:var(--mono);font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--copper-ink);font-weight:600}
-  .draft{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;color:var(--copper-ink);
-    background:var(--copper-bg);border-radius:22px;padding:6px 14px;white-space:nowrap}
+  .hero{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(330px,.96fr);gap:44px;align-items:stretch;margin-bottom:54px}
+  .hero-copy{display:flex;flex-direction:column;justify-content:space-between;min-height:570px;padding:8px 0 6px}
+  .topline{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:58px}
+  .brand{font-family:var(--mono);font-size:12.5px;letter-spacing:.03em;color:var(--copper-ink);font-weight:600}
+  .draft{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.01em;color:var(--copper-ink);
+    background:rgba(242,228,212,.82);border:1px solid rgba(169,102,47,.18);border-radius:11px;padding:7px 11px;white-space:nowrap}
+  .kicker{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--copper-ink);margin:0 0 18px}
 
-  h1{font-family:var(--sans);font-weight:800;font-size:38px;line-height:1.08;letter-spacing:0;margin:0 0 8px;max-width:15ch}
-  .rule{width:68px;height:4px;background:var(--copper);border-radius:2px;margin:12px 0 20px}
-  .lede{font-size:20px;font-weight:500;color:var(--ink);margin:0;line-height:1.5;max-width:62ch}
+  h1{font-family:var(--sans);font-weight:800;font-size:clamp(42px,5.2vw,64px);line-height:1;letter-spacing:0;margin:0 0 24px;max-width:100%;text-wrap:balance}
+  .rule{width:86px;height:5px;background:var(--copper);border-radius:999px;margin:0 0 24px}
+  .lede{font-size:20px;font-weight:500;color:var(--ink);margin:0;line-height:1.48;max-width:38rem;text-wrap:pretty}
+  .hero-insights{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:48px}
+  .hero-insight{background:rgba(255,255,255,.74);border:1px solid rgba(216,226,236,.86);border-radius:16px;padding:14px 14px 15px;box-shadow:0 10px 28px rgba(6,42,82,.05)}
+  .hero-insight b{display:block;font-size:13px;line-height:1.2;color:var(--navy);margin-bottom:5px}
+  .hero-insight span{display:block;font-size:13px;line-height:1.35;color:var(--muted)}
+  .hero-panel{position:relative;margin:0;height:570px;border-radius:26px;overflow:hidden;background:var(--navy);box-shadow:var(--shadow)}
+  .hero-panel img{display:block;width:100%;height:100%;object-fit:cover;object-position:center center;filter:saturate(.82) contrast(.98)}
+  .hero-panel::after{content:"";position:absolute;inset:0;background:
+    linear-gradient(180deg,rgba(6,42,82,.16),rgba(6,42,82,.62)),
+    linear-gradient(90deg,rgba(6,42,82,.18),rgba(169,102,47,.12));pointer-events:none}
+  .hero-note{position:absolute;left:22px;right:22px;bottom:22px;z-index:1;color:#F6F8FA;background:rgba(6,42,82,.76);border:1px solid rgba(255,255,255,.18);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.45;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
 
-  .sec{display:grid;grid-template-columns:220px 1fr;column-gap:38px;row-gap:18px;align-items:start;
-    border-top:1px solid var(--line);margin-top:46px;padding-top:46px}
-  .sec-label{font-family:var(--mono);font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--copper-ink);font-weight:600;margin:0 0 10px}
-  .sec-head h2{font-family:var(--sans);font-weight:700;font-size:26px;line-height:1.16;letter-spacing:0;margin:0;color:var(--ink)}
+  main{background:rgba(255,255,255,.42);border:1px solid rgba(216,226,236,.72);border-radius:28px;padding:14px 28px 34px;box-shadow:var(--shadow-tight);backdrop-filter:blur(10px)}
+  .sec{display:grid;grid-template-columns:250px minmax(0,1fr);column-gap:54px;row-gap:18px;align-items:start;
+    border-top:1px solid var(--line);padding:48px 0}
+  .sec:first-child{border-top:0}
+  .sec-label{font-family:var(--mono);font-size:13px;letter-spacing:0;color:var(--copper-ink);font-weight:600;margin:0 0 12px}
+  .sec-head h2{font-family:var(--sans);font-weight:800;font-size:clamp(25px,3vw,34px);line-height:1.08;letter-spacing:0;margin:0;color:var(--ink);text-wrap:balance}
   .sec-body > :first-child{margin-top:0}
   .sec-body > :last-child{margin-bottom:0}
   p{margin:0 0 16px}
   p.muted{color:var(--muted)}
   strong{font-weight:700}
 
-  .callout{border:1px solid var(--line);border-left:5px solid var(--copper);border-radius:0 14px 14px 0;background:var(--card);padding:18px 20px;margin:0 0 18px}
-  .callout h3{font-size:20px;line-height:1.2;margin:0 0 7px;font-weight:800;color:var(--ink)}
-  .callout p{font-size:17px;color:var(--muted);margin:0}
-  .callout.strong{background:var(--p1-bg);border-left-color:var(--navy)}
+  .callout{border:0;border-top:1px solid rgba(6,42,82,.13);border-bottom:1px solid rgba(6,42,82,.13);border-radius:0;background:transparent;padding:24px 0;margin:22px 0 0;box-shadow:none}
+  .callout h3{font-size:24px;line-height:1.16;margin:0 0 8px;font-weight:800;color:var(--ink);text-wrap:balance}
+  .callout p{font-size:17.5px;color:var(--muted);margin:0;max-width:66ch}
+  .callout.strong{border-top:0;margin:0 0 18px;padding:0 0 24px}
 
   ul.clean{list-style:none;padding:0;margin:0}
-  ul.clean li{position:relative;padding:9px 0 9px 28px;border-bottom:1px solid var(--line);font-size:18px}
-  ul.clean li:last-child{border-bottom:0}
+  ul.clean li{position:relative;padding:10px 0 10px 28px;font-size:18px}
   ul.clean li::before{content:"";position:absolute;left:0;top:20px;width:13px;height:2px;background:var(--copper);border-radius:2px}
   ul.clean li b{font-weight:700}
   .note{margin-top:16px}
 
-  .flow{margin:0}
-  .step{display:flex;gap:16px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--line)}
-  .step:last-child{border-bottom:0}
-  .num{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--copper-ink);color:#fff;font-family:var(--mono);font-size:15px;font-weight:600;margin-top:1px}
+  .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}
+  .step{position:relative;display:flex;flex-direction:column;gap:12px;align-items:flex-start;padding:17px 16px 18px;border:1px solid rgba(216,226,236,.9);border-radius:16px;background:rgba(255,255,255,.72)}
+  .num{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:var(--copper-ink);color:#fff;font-family:var(--mono);font-size:15px;font-weight:600;margin-top:1px}
   .step.key .num{background:var(--navy)}
   .step-body h4{margin:0 0 3px;font-size:18.75px;font-weight:700;color:var(--ink)}
-  .step-body p{margin:0;font-size:17px;color:var(--muted)}
+  .step-body p{margin:0;font-size:16px;color:var(--muted);line-height:1.45}
   .step.key .step-body p{color:var(--copper-ink);font-weight:600}
 
-  .chunk-list{display:grid;gap:13px;margin:0}
-  .chunk{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px 18px}
+  .chunk-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:22px 0 0}
+  .chunk{background:rgba(255,255,255,.82);border:1px solid rgba(216,226,236,.9);border-radius:18px;padding:20px 20px 19px;box-shadow:0 14px 34px rgba(6,42,82,.055)}
+  .chunk:first-child{grid-column:1 / -1;background:linear-gradient(135deg,#FFFFFF 0%,#F1E6DA 100%)}
   .chunk-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:10px}
   .chunk h3{font-size:20px;line-height:1.18;margin:0;font-weight:800;color:var(--ink)}
-  .tag{flex:none;font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--copper-ink);background:var(--copper-bg);border-radius:999px;padding:5px 9px;white-space:nowrap}
+  .tag{flex:none;font-family:var(--mono);font-size:11.5px;font-weight:600;letter-spacing:0;color:var(--copper-ink);background:var(--copper-bg);border-radius:9px;padding:6px 9px;white-space:nowrap}
   .chunk p{font-size:16.75px;color:var(--muted);margin:0 0 10px;line-height:1.5}
-  .chunk-meta{display:grid;gap:8px;margin-top:11px}
-  .mini{font-size:15px;line-height:1.45;color:var(--ink);background:var(--paper);border-radius:9px;padding:10px 11px}
-  .mini b{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--copper-ink);display:block;margin-bottom:3px}
+  .chunk p:last-child{margin-bottom:0}
+  .chunk p + p{margin-top:10px;color:var(--ink);font-size:15px;font-weight:700;line-height:1.42}
 
-  .paths{display:grid;gap:13px}
-  .path{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:18px 20px}
-  .path.recommended{border-color:var(--p1);background:var(--p1-bg)}
+  .bucket-list{list-style:none;counter-reset:bucket;padding:0;margin:17px 0 0;display:grid;gap:13px}
+  .bucket-list li{counter-increment:bucket;display:grid;grid-template-columns:34px minmax(0,1fr);gap:13px;align-items:start;color:var(--muted);font-size:17px;line-height:1.5}
+  .bucket-list li::before{content:counter(bucket);display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--navy);color:#fff;font-family:var(--mono);font-size:13px;font-weight:600;margin-top:1px}
+  .bucket-list b{color:var(--ink);font-weight:800}
+
+  .paths{display:grid;grid-template-columns:1fr;gap:13px}
+  .path{background:rgba(255,255,255,.78);border:1.5px solid rgba(216,226,236,.96);border-radius:18px;padding:20px 22px}
+  .path.recommended{border-color:var(--p1);background:linear-gradient(135deg,#E4EEF7 0%,#F8FBFD 100%);box-shadow:0 18px 44px rgba(21,90,149,.12)}
+  .path-title{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin:0 0 6px}
   .path h3{font-size:20px;margin:0 0 6px;font-weight:800;color:var(--ink)}
+  .path-title h3{margin:0}
+  .rec-badge{flex:none;font-family:var(--mono);font-size:11.5px;font-weight:600;color:var(--navy);background:rgba(255,255,255,.78);border:1px solid rgba(21,90,149,.22);border-radius:7px;padding:5px 8px;white-space:nowrap}
   .path p{font-size:16.75px;color:var(--muted);margin:0 0 12px}
   .path ul{list-style:none;margin:0;padding:0}
-  .path li{position:relative;padding:7px 0 7px 22px;font-size:15.75px;color:var(--ink);border-top:1px solid rgba(3,38,79,.09)}
+  .path li{position:relative;padding:7px 0 7px 22px;font-size:15.75px;color:var(--ink)}
   .path li::before{content:"";position:absolute;left:0;top:17px;width:10px;height:2px;background:var(--copper);border-radius:2px}
 
   .choice{display:grid;gap:12px;margin:0 0 8px}
-  .opt{display:flex;gap:14px;align-items:flex-start;border:1.5px solid var(--line);border-radius:12px;padding:15px 17px;background:#fff;cursor:pointer;transition:border-color .12s,background .12s}
-  .opt:hover{border-color:#C6D2E2}
-  .opt[aria-pressed="true"]{border-color:var(--p1);background:var(--p1-bg)}
-  .opt .pick{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--copper-ink);color:#fff;font-family:var(--mono);font-weight:600;font-size:14px;margin-top:1px}
+  .opt{display:flex;gap:15px;align-items:flex-start;border:1.5px solid rgba(216,226,236,.96);border-radius:16px;padding:17px 18px;background:rgba(255,255,255,.84);cursor:pointer;transition:border-color .18s,background .18s,transform .18s,box-shadow .18s}
+  .opt:hover{border-color:#B9C9DA;transform:translateY(-1px);box-shadow:0 12px 30px rgba(6,42,82,.075)}
+  .opt:active{transform:translateY(1px)}
+  .opt[aria-pressed="true"]{border-color:var(--p1);background:var(--p1-bg);box-shadow:0 14px 34px rgba(21,90,149,.12)}
+  .opt .pick{flex:none;display:grid;place-items:center;width:31px;height:31px;border-radius:10px;background:var(--copper-ink);color:#fff;font-family:var(--mono);font-weight:600;font-size:14px;margin-top:1px}
   .opt h4{margin:0 0 2px;font-size:18px;font-weight:700;color:var(--ink)}
   .opt p{margin:0;font-size:15.5px;color:var(--muted)}
   .opt[aria-pressed="true"] p{color:var(--ink)}
@@ -94,63 +127,116 @@
 
   .ranker{display:none;margin:14px 0 0}
   .rank-instr{font-size:15.5px;font-weight:600;margin:0 0 11px;color:var(--ink)}
-  .slice{display:flex;gap:13px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff;cursor:pointer;margin-bottom:9px;transition:border-color .12s}
+  .slice{display:flex;gap:13px;align-items:center;border:1px solid rgba(216,226,236,.96);border-radius:14px;padding:13px 15px;background:rgba(255,255,255,.84);cursor:pointer;margin-bottom:9px;transition:border-color .16s,transform .16s}
   .slice:last-child{margin-bottom:0}
-  .slice:hover{border-color:#C6D2E2}
+  .slice:hover{border-color:#B9C9DA;transform:translateY(-1px)}
+  .slice:active{transform:translateY(1px)}
   .slice.ranked{border-color:var(--copper)}
-  .slice .rankbadge{flex:none;display:grid;place-items:center;width:27px;height:27px;border-radius:50%;border:1.5px solid var(--line);color:var(--muted);font-family:var(--mono);font-weight:600;font-size:14px}
+  .slice .rankbadge{flex:none;display:grid;place-items:center;width:29px;height:29px;border-radius:9px;border:1.5px solid var(--line);color:var(--muted);font-family:var(--mono);font-weight:600;font-size:14px}
   .slice.ranked .rankbadge{background:var(--copper-ink);border-color:var(--copper-ink);color:#fff}
   .slice h4{margin:0 0 1px;font-size:16.5px;font-weight:700;color:var(--ink)}
   .slice p{margin:0;font-size:14.5px;color:var(--muted)}
-  .answer{margin-top:16px;font-family:var(--mono);font-size:14px;line-height:1.55;color:var(--ink);background:var(--p1-bg);border-radius:10px;padding:13px 16px;white-space:pre-wrap}
+  .answer{margin-top:18px;font-family:var(--mono);font-size:14px;line-height:1.55;color:var(--ink);background:var(--p1-bg);border:1px solid rgba(21,90,149,.12);border-radius:14px;padding:15px 17px;white-space:pre-wrap}
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-  .action{border:0;border-radius:999px;background:var(--navy);color:#fff;font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:.02em;text-transform:uppercase;padding:9px 13px;cursor:pointer}
+  .action{border:0;border-radius:12px;background:var(--navy);color:#fff;font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:0;padding:10px 14px;cursor:pointer;transition:background .18s,transform .18s,box-shadow .18s}
+  .action:hover{background:var(--navy-2);transform:translateY(-1px);box-shadow:0 10px 24px rgba(6,42,82,.18)}
+  .action:active{transform:translateY(1px)}
   .action.secondary{background:var(--copper-ink)}
   .status{font-size:14px;color:var(--success);margin:9px 0 0;display:none}
 
   ul.assume{list-style:none;padding:0;margin:0}
-  ul.assume li{position:relative;padding:9px 0 9px 28px;border-bottom:1px solid var(--line);font-size:17.5px;color:var(--ink)}
-  ul.assume li:last-child{border-bottom:0}
+  ul.assume li{position:relative;padding:10px 0 10px 28px;font-size:17.5px;color:var(--ink)}
   ul.assume li::before{content:"";position:absolute;left:0;top:18px;width:13px;height:2px;background:var(--copper);border-radius:2px}
   ul.assume li b{font-weight:700}
 
-  .next{border-top:1px solid var(--line);margin-top:46px;padding-top:46px}
-  .next-card{background:var(--navy);color:#fff;border-radius:15px;padding:24px 26px}
+  .next{border-top:1px solid var(--line);padding:48px 0 12px}
+  .next-card{background:var(--navy);color:#fff;border-radius:22px;padding:30px 32px;box-shadow:0 24px 60px rgba(6,42,82,.22)}
   .next-card .sec-label{color:var(--copper-lt)}
-  .next-card h2{font-family:var(--sans);font-weight:700;font-size:26px;letter-spacing:0;color:#fff;margin:0 0 9px}
+  .next-card h2{font-family:var(--sans);font-weight:800;font-size:30px;line-height:1.12;letter-spacing:0;color:#fff;margin:0 0 9px}
   .next-card p{color:#D7E0EC;font-size:18px;margin:0;line-height:1.55}
 
-  footer{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  footer{max-width:1064px;margin:30px auto 0;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
-  @media(max-width:760px){
-    .sec{grid-template-columns:1fr;column-gap:0;row-gap:14px;margin-top:38px;padding-top:38px}
-    .next{margin-top:38px;padding-top:38px}
+  @media(prefers-reduced-motion:no-preference){
+    .motion-ready [data-reveal]{opacity:0;transform:translateY(16px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1);transition-delay:var(--reveal-delay,0ms)}
+    .motion-ready [data-reveal].is-visible{opacity:1;transform:translateY(0)}
+    .motion-ready .hero-panel[data-reveal]{transform:translateY(14px) scale(.985)}
+    .motion-ready .hero-panel[data-reveal].is-visible{transform:translateY(0) scale(1)}
+    .motion-ready .rule{transform-origin:left center;animation:rule-in .55s cubic-bezier(.16,1,.3,1) .22s both}
+    @keyframes rule-in{
+      from{opacity:.45;transform:scaleX(.3)}
+      to{opacity:1;transform:scaleX(1)}
+    }
+  }
+
+  @media(max-width:920px){
+    .hero{grid-template-columns:1fr;gap:26px}
+    .hero-copy{min-height:auto}
+    .topline{margin-bottom:42px}
+    .hero-panel{height:430px}
+    main{padding:8px 20px 28px}
+    .sec{grid-template-columns:1fr;column-gap:0;row-gap:18px}
+    .flow{grid-template-columns:repeat(2,1fr)}
   }
   @media(max-width:560px){
-    body{padding:32px 18px 52px}
-    h1{font-size:31px}
-    .sec-head h2,.next-card h2{font-size:23px}
+    body{padding:28px 16px 52px;font-size:17px}
+    h1{font-size:39px;max-width:12ch}
+    main{border-radius:20px;padding:4px 16px 22px}
+    .hero{gap:18px;margin-bottom:16px}
+    .hero-copy{padding-top:0}
+    .topline{align-items:flex-start;margin-bottom:34px}
+    .hero-insights,.chunk-list,.flow{grid-template-columns:1fr}
+    .hero-panel{height:230px;border-radius:20px}
+    .hero-note{display:none}
+    .sec{padding:38px 0}
+    .sec-head h2,.next-card h2{font-size:24px}
     .lede{font-size:18px}
     .chunk-top{display:block}
     .tag{display:inline-block;margin-top:9px}
+    .path-title{display:block}
+    .rec-badge{display:inline-block;margin-top:8px}
+    .chunk:first-child{grid-column:auto}
+    .next-card{border-radius:18px;padding:24px 22px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
   }
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 <div class="wrap">
 
-  <div class="topline">
-    <span class="brand">Caprock x Intellitonic</span>
-    <span class="draft">Discovery readout</span>
-  </div>
+  <header class="hero">
+    <div class="hero-copy">
+      <div>
+        <div class="topline">
+          <span class="brand">Caprock / Intellitonic</span>
+          <span class="draft">Client decision draft</span>
+        </div>
+        <p class="kicker">Discovery readout</p>
+        <h1>Caprock reporting decision path</h1>
+        <div class="rule"></div>
+        <p class="lede">What we heard, what it implies for the reporting architecture, and the delivery choice needed before scope, timeline, and budget.</p>
+      </div>
+      <div class="hero-insights" aria-label="Readout summary">
+        <div class="hero-insight"><b>Core problem</b><span>Trustworthy data, not prettier charts.</span></div>
+        <div class="hero-insight"><b>Shared spine</b><span>Collect, normalize, validate, report.</span></div>
+        <div class="hero-insight"><b>Decision needed</b><span>Whole release, phased priority, or date-led first slice.</span></div>
+      </div>
+    </div>
+    <figure class="hero-panel">
+      <img src="caprock-reporting-ambient.jpg" alt="Ambient workspace with analytics charts on a laptop for cross-channel reporting context">
+      <figcaption class="hero-note">Reporting context: one calm surface for paid, organic, web, calls, forms, MQLs, and future CRM data.</figcaption>
+    </figure>
+  </header>
 
-  <h1>Discovery readout and phasing options</h1>
-  <div class="rule"></div>
-  <p class="lede">What we heard, what it implies for the reporting architecture, and the delivery decision we need before building a scope, timeline, and budget.</p>
+  <main id="main">
 
   <section class="sec">
     <div class="sec-head">
-      <p class="sec-label">01 · Readout</p>
+      <p class="sec-label">Readout</p>
       <h2>What discovery clarified</h2>
     </div>
     <div class="sec-body">
@@ -166,14 +252,19 @@
       </ul>
       <div class="callout">
         <h3>The requirements fall into four buckets.</h3>
-        <p>First: trustworthy data and refresh cadence. Second: flexible analysis, including custom dates, period comparisons, campaign views, geo, audience, and channel filters. Third: consistent performance reporting across paid, organic, website, calls, forms, email, SEO, and MQLs. Fourth: audience-specific outputs for marketing, leadership, board, and eventually regional teams.</p>
+        <ol class="bucket-list">
+          <li><span><b>Trustworthy data and refresh cadence.</b> The system needs reliable inputs, clear definitions, and a repeatable way to check accuracy.</span></li>
+          <li><span><b>Flexible analysis.</b> Caprock needs custom dates, period comparisons, campaign views, geo, audience, and channel filters.</span></li>
+          <li><span><b>Consistent performance reporting.</b> Paid, organic, website, calls, forms, email, SEO, and MQLs need to sit in one reporting frame.</span></li>
+          <li><span><b>Audience-specific outputs.</b> Marketing, leadership, board, and eventually regional teams need different views from the same data spine.</span></li>
+        </ol>
       </div>
     </div>
   </section>
 
   <section class="sec">
     <div class="sec-head">
-      <p class="sec-label">02 · Architecture</p>
+      <p class="sec-label">Architecture</p>
       <h2>The proposed reporting spine</h2>
     </div>
     <div class="sec-body">
@@ -184,17 +275,17 @@
         <div class="step"><span class="num">3</span><div class="step-body"><h4>Report</h4><p>Dashboard views for marketing, leadership, channel detail, campaign detail, and board-ready summaries.</p></div></div>
         <div class="step"><span class="num">4</span><div class="step-body"><h4>Extend</h4><p>BigQuery, Squid, Dynamics, and closed-loop ROI can be added as the data model matures.</p></div></div>
       </div>
-      <p class="muted note">This is the foundation whether the project is delivered in one release or in phases. The choice now is delivery sequence, not a different architecture.</p>
+      <p class="muted note">This is the foundation whether the project is delivered in one release or in phases. The choice now is delivery sequence.</p>
     </div>
   </section>
 
   <section class="sec">
     <div class="sec-head">
-      <p class="sec-label">03 · Work chunks</p>
+      <p class="sec-label">Work chunks</p>
       <h2>Natural ways to phase value</h2>
     </div>
     <div class="sec-body">
-      <p>These are the pieces that could be grouped into one release or sequenced as useful slices. The order should follow Caprock's most immediate pain, not our assumptions.</p>
+      <p>These are the pieces that could be grouped into one release or sequenced as useful slices. The order should follow Caprock's most immediate pain.</p>
 
       <div class="chunk-list">
         <article class="chunk">
@@ -202,11 +293,8 @@
             <h3>Tracking and attribution foundation</h3>
             <span class="tag">Enabler</span>
           </div>
-          <p>Get forms, calls, campaigns, source fields, and key GA4 events into a cleaner state so later reporting does not inherit today's attribution gaps.</p>
-          <div class="chunk-meta">
-            <div class="mini"><b>Upfront value</b>Better source capture, fewer manual lookups, cleaner lead data.</div>
-            <div class="mini"><b>Best if</b>Caprock wants confidence that the rest of the reporting is being built on the right inputs.</div>
-          </div>
+          <p>Clean up forms, calls, campaign fields, source capture, and key GA4 events before dashboard work inherits today's attribution gaps.</p>
+          <p>Start here if Caprock needs confidence in the inputs before investing in more reporting views.</p>
         </article>
 
         <article class="chunk">
@@ -215,10 +303,6 @@
             <span class="tag">Fast visibility</span>
           </div>
           <p>Normalize paid media KPIs across Google Ads, LinkedIn, Simpli.fi, YouTube, and related channels, using the consistent metric set Caprock already requested.</p>
-          <div class="chunk-meta">
-            <div class="mini"><b>Upfront value</b>Replaces scattered paid views with one dependable summary and channel detail.</div>
-            <div class="mini"><b>Best if</b>The most urgent pain is budget, pacing, performance meetings, or paid-channel accountability.</div>
-          </div>
         </article>
 
         <article class="chunk">
@@ -227,10 +311,6 @@
             <span class="tag">Executive value</span>
           </div>
           <p>Bring form fills, calls, and Caprock's structured MQL data into the reporting view so leadership can see which channels are producing real lead activity.</p>
-          <div class="chunk-meta">
-            <div class="mini"><b>Upfront value</b>Moves beyond impressions and clicks toward the question leadership keeps asking.</div>
-            <div class="mini"><b>Best if</b>The immediate need is to explain what is driving leads before full CRM automation is ready.</div>
-          </div>
         </article>
 
         <article class="chunk">
@@ -239,10 +319,6 @@
             <span class="tag">Context layer</span>
           </div>
           <p>Fold in GA4 website performance, organic search, Google Business Profile, organic social, and related non-paid sources.</p>
-          <div class="chunk-meta">
-            <div class="mini"><b>Upfront value</b>Shows the non-paid contribution that paid-only reporting misses.</div>
-            <div class="mini"><b>Best if</b>Caprock wants the first release to explain the full marketing mix, not just media spend.</div>
-          </div>
         </article>
 
         <article class="chunk">
@@ -251,10 +327,7 @@
             <span class="tag">Decision layer</span>
           </div>
           <p>Standardize campaign and geography fields so the team can filter across channels by the way Caprock actually plans and evaluates work.</p>
-          <div class="chunk-meta">
-            <div class="mini"><b>Upfront value</b>Turns the dashboard from channel reporting into planning support.</div>
-            <div class="mini"><b>Best if</b>The key decisions are market allocation, regional performance, campaign mix, or spend by geography.</div>
-          </div>
+          <p>Start here if the next decision is market allocation, regional performance, campaign mix, or spend by geography.</p>
         </article>
 
         <article class="chunk">
@@ -263,10 +336,6 @@
             <span class="tag">Audience layer</span>
           </div>
           <p>Create higher-level summaries for leadership and board conversations, focused on leads, investment, trend, and what needs attention.</p>
-          <div class="chunk-meta">
-            <div class="mini"><b>Upfront value</b>Turns the same data spine into meeting-ready views for different audiences.</div>
-            <div class="mini"><b>Best if</b>A leadership or board cycle is the forcing function for the first release.</div>
-          </div>
         </article>
       </div>
     </div>
@@ -274,7 +343,7 @@
 
   <section class="sec">
     <div class="sec-head">
-      <p class="sec-label">04 · Delivery paths</p>
+      <p class="sec-label">Delivery paths</p>
       <h2>Three reasonable ways to sequence it</h2>
     </div>
     <div class="sec-body">
@@ -290,7 +359,10 @@
         </article>
 
         <article class="path recommended">
-          <h3>Path B: phased release by priority</h3>
+          <div class="path-title">
+            <h3>Path B: phased release by priority</h3>
+            <span class="rec-badge">Our Recommendation</span>
+          </div>
           <p>Pick the highest-value slices first, while keeping the same shared foundation underneath.</p>
           <ul>
             <li>Best for getting useful reporting into hands sooner.</li>
@@ -314,7 +386,7 @@
 
   <section class="sec" id="decision">
     <div class="sec-head">
-      <p class="sec-label">05 · Client decision</p>
+      <p class="sec-label">Client decision</p>
       <h2>What we need from you now</h2>
     </div>
     <div class="sec-body">
@@ -367,7 +439,7 @@
 
   <section class="sec">
     <div class="sec-head">
-      <p class="sec-label">06 · Working assumptions</p>
+      <p class="sec-label">Working assumptions</p>
       <h2>What we will assume unless corrected</h2>
     </div>
     <div class="sec-body">
@@ -383,11 +455,13 @@
 
   <section class="next">
     <div class="next-card">
-      <p class="sec-label">07 · Next</p>
+      <p class="sec-label">Next</p>
       <h2>After this decision</h2>
-      <p>Once Caprock confirms whole-system delivery or ranked phases, Intellitonic can convert this into the next planning layer: scope, timeline, responsibilities, and budget. The architecture does not need to change first. The delivery sequence does.</p>
+      <p>Once Caprock confirms whole-system delivery or ranked phases, Intellitonic can convert this into the next planning layer: scope, timeline, responsibilities, and budget.</p>
     </div>
   </section>
+
+  </main>
 
   <footer>
     <span>Prepared by Intellitonic</span>
@@ -407,6 +481,40 @@
     var status = document.getElementById('copyStatus');
     var mode = null;
     var order = [];
+
+    function setupMotion(){
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if(reduce) return;
+
+      var revealItems = Array.prototype.slice.call(document.querySelectorAll(
+        '.hero-copy > div, .hero-insights, .hero-panel, main > .sec, .chunk, .path, .next'
+      ));
+
+      revealItems.forEach(function(el, i){
+        el.setAttribute('data-reveal', '');
+        el.style.setProperty('--reveal-delay', Math.min(i * 45, 220) + 'ms');
+      });
+
+      document.documentElement.classList.add('motion-ready');
+
+      if(!('IntersectionObserver' in window)){
+        revealItems.forEach(function(el){ el.classList.add('is-visible'); });
+        return;
+      }
+
+      var observer = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          if(entry.isIntersecting){
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+      requestAnimationFrame(function(){
+        revealItems.forEach(function(el){ observer.observe(el); });
+      });
+    }
 
     function labelFor(id){
       for(var i=0;i<slices.length;i++){
@@ -445,6 +553,9 @@
         mode=o.dataset.mode;
         if(mode!=='phased'){ order=[]; }
         render();
+        if(mode==='phased' && ranker.scrollIntoView){
+          ranker.scrollIntoView({ block: 'nearest' });
+        }
       }
       o.addEventListener('click', choose);
       o.addEventListener('keydown', function(e){
@@ -492,6 +603,7 @@
       window.location.href = 'mailto:wesleydavis@me.com?subject=' + subject + '&body=' + body;
     });
 
+    setupMotion();
     render();
   })();
 </script>
