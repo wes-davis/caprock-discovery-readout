@@ -138,7 +138,7 @@
   .slice p{margin:0;font-size:14.5px;color:var(--muted)}
   .answer{margin-top:18px;font-family:var(--mono);font-size:14px;line-height:1.55;color:var(--ink);background:var(--p1-bg);border:1px solid rgba(21,90,149,.12);border-radius:14px;padding:15px 17px;white-space:pre-wrap}
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-  .action{border:0;border-radius:12px;background:var(--navy);color:#fff;font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:0;padding:10px 14px;cursor:pointer;transition:background .18s,transform .18s,box-shadow .18s}
+  .action{display:inline-flex;align-items:center;border:0;border-radius:12px;background:var(--navy);color:#fff;text-decoration:none;font-family:var(--mono);font-size:12.5px;font-weight:600;letter-spacing:0;padding:10px 14px;cursor:pointer;transition:background .18s,transform .18s,box-shadow .18s}
   .action:hover{background:var(--navy-2);transform:translateY(-1px);box-shadow:0 10px 24px rgba(6,42,82,.18)}
   .action:active{transform:translateY(1px)}
   .action.secondary{background:var(--copper-ink)}
@@ -431,7 +431,7 @@
       <div id="answer" class="answer">Choose A, B, or C to begin.</div>
       <div class="actions">
         <button class="action" type="button" id="copyAnswer">Copy answer</button>
-        <button class="action secondary" type="button" id="emailAnswer">Email answer</button>
+        <a class="action secondary" id="emailAnswer" href="mailto:wesleydavis@me.com?subject=Caprock%20dashboard%20phasing%20preference">Email answer</a>
       </div>
       <p class="status" id="copyStatus">Answer copied.</p>
     </div>
@@ -535,6 +535,12 @@
       return 'Caprock delivery preference: [not selected yet].';
     }
 
+    function mailtoUrl(){
+      var subject = encodeURIComponent('Caprock dashboard phasing preference');
+      var body = encodeURIComponent(currentAnswer() + '\n\nSubmitted from: ' + window.location.href);
+      return 'mailto:wesleydavis@me.com?subject=' + subject + '&body=' + body;
+    }
+
     function render(){
       opts.forEach(function(o){ o.setAttribute('aria-pressed', o.dataset.mode===mode ? 'true':'false'); });
       ranker.style.display = (mode==='phased') ? 'block' : 'none';
@@ -545,6 +551,7 @@
         else { s.classList.remove('ranked'); badge.textContent=''; s.setAttribute('aria-pressed','false'); }
       });
       answer.textContent = currentAnswer();
+      email.setAttribute('href', mailtoUrl());
       status.style.display = 'none';
     }
 
@@ -598,9 +605,13 @@
     });
 
     email.addEventListener('click', function(){
-      var subject = encodeURIComponent('Caprock dashboard phasing preference');
-      var body = encodeURIComponent(currentAnswer() + '\n\nSubmitted from: ' + window.location.href);
-      window.location.href = 'mailto:wesleydavis@me.com?subject=' + subject + '&body=' + body;
+      var text = currentAnswer();
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).catch(function(){});
+      }
+      email.setAttribute('href', mailtoUrl());
+      status.textContent = 'Opening email draft. The answer was also copied in case your browser blocks email links.';
+      status.style.display = 'block';
     });
 
     setupMotion();
