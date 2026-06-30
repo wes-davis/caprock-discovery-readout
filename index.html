@@ -431,7 +431,7 @@
       <div id="answer" class="answer">Choose A, B, or C to begin.</div>
       <div class="actions">
         <button class="action" type="button" id="copyAnswer">Copy answer</button>
-        <a class="action secondary" id="emailAnswer" href="mailto:wesleydavis@me.com?subject=Caprock%20dashboard%20phasing%20preference">Email answer</a>
+        <a class="action secondary" id="emailAnswer" href="mailto:simren@intellitonic.com?subject=Caprock%20dashboard%20phasing%20preference">Email answer</a>
       </div>
       <p class="status" id="copyStatus">Answer copied.</p>
     </div>
@@ -538,7 +538,7 @@
     function mailtoUrl(){
       var subject = encodeURIComponent('Caprock dashboard phasing preference');
       var body = encodeURIComponent(currentAnswer() + '\n\nSubmitted from: ' + window.location.href);
-      return 'mailto:wesleydavis@me.com?subject=' + subject + '&body=' + body;
+      return 'mailto:simren@intellitonic.com?subject=' + subject + '&body=' + body;
     }
 
     function render(){
